@@ -34,7 +34,7 @@
 
 I have sketched a rough design of what the path might look like based on the size of the marshmallows and the given statements. Each marshmallow is 3cm in diameter, the track they are on is chosen to be 6cm (1.5cm space between either edge), and marshmallow access is 6 with spacing of 1cm edge to edge in between and a total length of 0.24cm. The garbage shoot will be 10cm by 20cm and 5cm away from the assembly.
 
-<img src="Assembly_Line.jpg" width="1200" height="1000"/>
+<img src="Assembly_Line.jpg" width="600" height="500" rotate="90"/>
 
 #### Inertia, arms, and motors
 
@@ -44,8 +44,8 @@ The marshmallows mass is negligible and so the focus for the inertia will be the
 
 There are two easy options that come to mind first. I believe gripper slide works better for the assembly style sliding we will be doing.
 
-<img src="Gripper_Rotate.jpg" width="1200" height="1000"/>
-<img src="Gripper_Linear.jpeg" width="1200" height="1000"/>
+<img src="Gripper_Rotate.jpg" width="600" height="500"/>
+<img src="Gripper_Linear.jpeg" width="600" height="500"/>
 
 ## Control
 
