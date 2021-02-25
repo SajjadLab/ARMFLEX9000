@@ -32,17 +32,17 @@
 
 #### Path layout and distances 
 
-	I have sketched a rough design of what the path might look like based on the size of the marshmallows and the given statements. Each marshmallow is 3cm in diameter, the track they are on is chosen to be 6cm (1.5cm space between either edge), and marshmallow access is 6 with spacing of 1cm edge to edge in between and a total length of 0.24cm. The garbage shoot will be 10cm by 20cm and 5cm away from the assembly.
+I have sketched a rough design of what the path might look like based on the size of the marshmallows and the given statements. Each marshmallow is 3cm in diameter, the track they are on is chosen to be 6cm (1.5cm space between either edge), and marshmallow access is 6 with spacing of 1cm edge to edge in between and a total length of 0.24cm. The garbage shoot will be 10cm by 20cm and 5cm away from the assembly.
 
 #### Inertia, arms, and motors
 
-	The marshmallows mass is negligble and so the focus for the inertia will be the mass of the arms and the motors at the joints. A choice of light metal arms and small motors will reduce cost and make control easier.
+The marshmallows mass is negligble and so the focus for the inertia will be the mass of the arms and the motors at the joints. A choice of light metal arms and small motors will reduce cost and make control easier.
 
 #### Gripper
 
-	There are two easy options that come to mind first. I believe gripper slide works better for the assembly style sliding we will be doing.
-	![Gripper grab](Gripper_Rotate.jpg)
-	![Gripper slide](Gripper_Linear.jpg)
+There are two easy options that come to mind first. I believe gripper slide works better for the assembly style sliding we will be doing.
+![Gripper grab](Gripper_Rotate.jpg)
+![Gripper slide](Gripper_Linear.jpg)
 
 ## Control
 
@@ -50,11 +50,11 @@
 
 #### Kinematics
 
-	I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path layout and distances). Optimal lengths of arms will be discussed with Mech.
+I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path layout and distances). Optimal lengths of arms will be discussed with Mech.
 
 #### Path planning
 
-	Initial ideas include possibly only bending in one angle for easier/faster coding. Steps followed by arm:
+Initial ideas include possibly only bending in one angle for easier/faster coding. Steps followed by arm:
 
 	1. Go from fixed position to specified first marshmallow
 	2. Grab marshmallow
@@ -65,7 +65,7 @@
 
 #### Matlab function
 
-	A matlab function preforming the controller role in our robot. Refer to video on coding a controller.
+A matlab function preforming the controller role in our robot. Refer to video on coding a controller.
 
 	- Derivative filter
 	- Encoder resolution
