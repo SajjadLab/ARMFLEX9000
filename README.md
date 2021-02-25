@@ -42,7 +42,7 @@ The marshmallows mass is negligble and so the focus for the inertia will be the 
 
 There are two easy options that come to mind first. I believe gripper slide works better for the assembly style sliding we will be doing.
 ![Gripper grab](Gripper_Rotate.jpg)
-![Gripper slide](Gripper_Linear.jpg)
+![Gripper slide](Gripper_Linear.jpeg)
 
 ## Control
 
@@ -50,28 +50,29 @@ There are two easy options that come to mind first. I believe gripper slide work
 
 #### Kinematics
 
-I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path layout and distances). Optimal lengths of arms will be discussed with Mech.
+I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path-layout-and-distances). Optimal lengths of arms will be discussed with Mech.
 
 #### Path planning
 
 Initial ideas include possibly only bending in one angle for easier/faster coding. Steps followed by arm:
 
-	1. Go from fixed position to specified first marshmallow
-	2. Grab marshmallow
-	3. Pull out (avoid other marshmallows, possibly increase spacing to accommodate)
-	4. Bend in specified angle quickly and release gripper to discard marshmallow
-	5. Return to fixed position if there is no other task, else go to task 1
+1. Go from fixed position to specified first marshmallow
+2. Grab marshmallow
+3. Pull out (avoid other marshmallows, possibly increase spacing to accommodate)
+4. Bend in specified angle quickly and release gripper to discard marshmallow
+5. Return to fixed position if there is no other task, else go to task 1
+
 ### Controller
 
 #### Matlab function
 
 A matlab function preforming the controller role in our robot. Refer to video on coding a controller.
 
-	- Derivative filter
-	- Encoder resolution
-	- ISR clock rate
+- Derivative filter
+- Encoder resolution
+- ISR clock rate
 
 
 #### Simulink model
 
-	- Import linear models from Elec and Mech
+- Import linear models from Elec and Mech
