@@ -34,7 +34,7 @@
 
 I have sketched a rough design of what the path might look like based on the size of the marshmallows and the given statements. Each marshmallow is 3cm in diameter, the track they are on is chosen to be 6cm (1.5cm space between either edge), and marshmallow access is 6 with spacing of 1cm edge to edge in between and a total length of 0.24cm. The garbage shoot will be 10cm by 20cm and 5cm away from the assembly.
 
-<img src="Assembly_Line.jpg" width="600" height="500" rotate="90"/>
+<img src="Assembly_Line.jpg" width="600" height="500" class="rotate90">
 
 #### Inertia, arms, and motors
 
