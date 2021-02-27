@@ -53,7 +53,7 @@ There are two easy options that come to mind first. I believe gripper slide work
 
 #### Kinematics
 
-I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path-layout-and-distances). Optimal lengths of arms will be discussed with Mech.
+I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path-layout-and-distances). Optimal lengths of arms will be discussed with Mech (~ 2x80mm arm segments).
 
 #### Path planning
 
