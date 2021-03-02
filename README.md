@@ -34,7 +34,10 @@
 
 I have sketched a rough design of what the path might look like based on the size of the marshmallows and the given statements. Each marshmallow is 3cm in diameter, the track they are on is chosen to be 6cm (1.5cm space between either edge), and marshmallow access is 6 with spacing of 1cm edge to edge in between and a total length of 24cm. The garbage shoot will be 10cm by 20cm and 5cm away from the assembly.
 
-<img src="Assembly_Line.jpg" width="700" height="500">
+_REQUIRMENTS SAY 3 MARSHMALLOWS ON THE STOPPED BELT_
+
+<img src="Assembly_Line1.1.jpg" width="700" height="500">
+*Revised Assembly line*
 
 #### Inertia, arms, and motors
 
@@ -53,7 +56,24 @@ There are two easy options that come to mind first. I believe gripper slide work
 
 #### Kinematics
 
-I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path-layout-and-distances). Optimal lengths of arms will be discussed with Mech (approximately 2x80mm arm segments).
+I have chosen to build a serial arm robot with 3 main DOF. The direct and inverse kinematics for the system will be built using a standard coordinate system outlined in [Path layout and distances](#Path-layout-and-distances).
+
+##### Arms 
+
+- Lengths (axis to axis):
+	- Ra = 0.13m
+	- Rb = 0.09m
+- Positions:
+	- Motor A:
+		- (xa, ya) = (0, 0)
+		- (Ra, $\alpha$)
+	- Motor B:
+		- (xb, yb) = (Ra*cos($\alpha$), Ra*sin($\alpha$))
+		- (Rb, $\beta$)
+	- Motor C:
+		- (xc, yc) = 
+		- (Rc, $\gamma$)
+
 
 #### Path planning
 
