@@ -38,7 +38,7 @@ int M2[] = {};
 int M3[] = {};
 
 // Persistent:
-double PrevFilter[nhat] = {0};
+// double PrevFilter[nhat] = {0};
 double PrevDerivative[nhat] = {0};
 double ept[nhat];
 double Temp = 0; 
@@ -87,6 +87,7 @@ bool ISR(in, out, gain, errorSum) {
   
   // Derivative output
   double DerivativeOutput = 0;
+  // Dot product
   for(n=0; n<nhat; n++) {
     DerivativeOutput += PrevDerivative[n]*ept[n];
   }
