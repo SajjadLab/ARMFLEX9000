@@ -1,15 +1,24 @@
 // ELEC 391 ARMFLEX9000
 // 16MHz freq
 // Input: List of # marshmallows to remove (ex: [1,3])
+#define TIMER_INTERRUPT_DEBUG 0
 
 // Parameters:
-#define KP
-#define KD
-#define KI
-double gainA[3];
-double gainB[3];
-double gainC[3];
-double gainD[3];
+// KP, KI, KD
+double gainA[3] = {0.82, 0.008, 0.2};
+double gainB[3] = {0.99, 0.01, 0.26};
+double gainC[3] = {1, 0.0075, 0.2};
+double gainD[3] = {2, 0.1, 0.08};
+double ra = 0.13;
+double rb = 0.09;
+
+// Timer
+#define USE_TIMER_1 true
+#define TIMER1_FREQ_HZ 1000
+
+// Libraries
+#include <math.h>
+#include "TimerInterrupt.h"
 
 const double Tsample = 1/500;
 const int nhat = 12;
@@ -32,16 +41,124 @@ int OutputC = A4;
 int OutputD = A6; 
 
 // Coordinates:
-int PositionDesired = 90;
-int M1[] = {};
-int M2[] = {};
-int M3[] = {};
+double marshmallows[][8][3] = {\
+{{0.055, 0, 0}, {0, 0.055, 0},     {0, 0.065, 0},     {0, 0.09, 0},     {0, 0.09, PI/2},     {0, 0.06, PI/2},     {0.055, 0, PI/2}, {0.055, 0, 0}}\
+, {{0.055, 0, 0}, {0.055, 0.055, 0}, {0.055, 0.065, 0}, {0.055, 0.09, 0}, {0.055, 0.09, PI/2}, {0.055, 0.06, PI/2}, {0.055, 0, PI/2}, {0.055, 0, 0}}\
+, {{0.055, 0, 0}, {0.11, 0.055, 0},  {0.11, 0.065, 0},  {0.11, 0.09, 0},  {0.11, 0.09, PI/2},  {0.11, 0.065, PI/2}, {0.055, 0, PI/2}, {0.055, 0, 0}}};
 
 // Persistent:
-// double PrevFilter[nhat] = {0};
-double PrevDerivative[nhat] = {0};
+double PrevDerivativeA[nhat] = {0};
+double PrevDerivativeB[nhat] = {0};
+double PrevDerivativeC[nhat] = {0};
+double PrevDerivativeD[nhat] = {0};
 double ept[nhat];
 double Temp = 0; 
+int completedMarshmallow = 0;
+int completedStage = 0;
+
+// Functions
+void PID(int out, double error, double errorSum, double gain[], double PrevDerivative[]) {
+  // Proportional
+  double ProportionalOutput = gain[0]*error;
+
+  // Integral
+  errorSum += error*Tsample;
+  double IntegralOutput = gain[1]*errorSum;
+
+  // Filtered derivative
+  PrevDerivative[0] = error - Temp;
+  
+  // Derivative output
+  double DerivativeOutput = 0;
+  // Dot product
+  for(int n=0; n<nhat; n++) {
+    DerivativeOutput += PrevDerivative[n]*ept[n];
+  }
+  
+  // Shift PrevDerivative:
+  for(int n=0; n<=nhat-1; n++){
+    PrevDerivative[nhat + 1 - n] = PrevDerivative[nhat - n];
+  }
+  
+  // Update Temp
+  Temp = error;
+
+  // Output
+  analogWrite(out, ProportionalOutput + IntegralOutput + DerivativeOutput*gain[2]);
+}
+
+
+void Controller() {
+  int marshmallowGrab[] = {1, 2, 3};
+  int marshmallowCount = 3;
+
+  // Read values
+  double alpha_actual = analogRead(InputA);
+  double beta_actual = analogRead(InputB);
+  double gamma_actual = analogRead(InputC);
+  double delta_actual = analogRead(InputD);
+
+  if(completedMarshmallow < marshmallowCount) {
+    // If we havent grabbed all the marshmallows then pick
+    // completedMarshmallow
+    int currentMarshmallow = marshmallowGrab[completedMarshmallow];
+
+    if(completedStage < 8) {
+      // Set the target position
+      double xc = marshmallows[currentMarshmallow][completedStage][1];
+      double yc = marshmallows[currentMarshmallow][completedStage][2];
+      double delta = marshmallows[currentMarshmallow][completedStage][3];
+      
+      // Calculate required angles
+      double beta = acos((pow(xc, 2) + pow(yc, 2) - pow(ra, 2) - pow(rb, 2))/(2*ra*rb));
+
+      double alpha = atan(yc/xc) - atan((rb*sin(beta))/(ra + rb*cos(beta)));
+
+      double gamma = (alpha_actual + beta_actual - PI/2);
+
+      // Check if we have reached target location (withing 2%)
+      double errorAlpha = (alpha_actual - alpha);
+      double errorBeta = (beta_actual - beta);
+      double errorGamma = (gamma_actual - gamma);
+      double errorDelta = (delta_actual - delta);
+      
+      if(errorAlpha < 0.05 && errorBeta < 0.05 && errorGamma < 0.002 && errorDelta < 0.005) {
+        // We have reached target position
+        // Increment completedStage
+        completedStage++;
+      }
+      else {
+        PID(OutputA, errorAlpha, errorSumA, gainA, PrevDerivativeA);
+        PID(OutputB, errorBeta, errorSumB, gainB, PrevDerivativeB);
+        PID(OutputC, errorGamma, errorSumC, gainC, PrevDerivativeC);
+        PID(OutputD, errorDelta, errorSumD, gainD, PrevDerivativeD);
+      }
+    }
+    else {
+      completedStage = 0;
+      completedMarshmallow++;
+    } 
+  }
+  else {
+    // We are done grabbing, go home
+    double alpha = 0;
+    double beta = 0;
+    double gamma = 0;
+    double delta = 0;
+
+    // Check if we have reached target location (withing 2%)
+    double errorAlpha = (alpha_actual - alpha);
+    double errorBeta = (beta_actual - beta);
+    double errorGamma = (gamma_actual - gamma);
+    double errorDelta = (delta_actual - delta);
+
+    // Call PID
+    PID(OutputA, errorAlpha, errorSumA, gainA, PrevDerivativeA);
+    PID(OutputB, errorBeta, errorSumB, gainB, PrevDerivativeB);
+    PID(OutputC, errorGamma, errorSumC, gainC, PrevDerivativeC);
+    PID(OutputD, errorDelta, errorSumD, gainD, PrevDerivativeD);
+  }
+}
 
 void setup() {
   pinMode(InputA, INPUT);
@@ -56,54 +173,22 @@ void setup() {
 
   if(ept == NULL) {
     int total = 0;
-    for(i=0; i<=nhat; i++){
-      ept(i) = P*exp(-P*i*Tsample);
-      total = total + ept(i);
+    for(int i=0; i<=nhat; i++){
+      ept[i] = P*exp(-P*i*Tsample);
+      total = total + ept[i];
     }
-    ept = ept*(1/(Tsample*total))*Tsample;  // Double check
+    for(int i=0; i<=nhat; i++){
+      ept[i] = ept[i]*(1/(Tsample*total))*Tsample;  // Double check
+    }
   }
   
+  // Frequency in float Hz
+  ITimer1.init();
+  if (ITimer1.attachInterrupt(TIMER1_FREQ_HZ, Controller))
+    Serial.println("Starting  ITimer0 OK, millis() = " + String(millis()));
+  else
+    Serial.println("Can't set ITimer0. Select another freq. or timer");
 }
 
 void loop() {
-  // Call ISR
-  ISR(InputA, OutputA, gainA[], errorSumA);
-}
-
-bool ISR(in, out, gain, errorSum) {
-  // Read position (from encoder) and calculate error
-  int PositionActual = analogRead(in);
-  int error = PositionDesired - PositonActual;
-
-  // Proportional
-  double ProportionalOutput = gain[0]*error;
-
-  // Integral
-  errorSum += error;
-  double IntegralOutput = gain[1]*errorSum;
-
-  // Filtered derivative
-  PrevDerivative[0] = error - Temp;
-  
-  // Derivative output
-  double DerivativeOutput = 0;
-  // Dot product
-  for(n=0; n<nhat; n++) {
-    DerivativeOutput += PrevDerivative[n]*ept[n];
-  }
-  
-  // Shift PrevDerivative:
-  for(n=0; n<=nhat-1; n++){
-    PrevDerivative(nhat + 1 - n) = PrevDerivative(nhat - n);
-  }
-  
-  // Update Temp
-  Temp = error;
-
-  // Output
-  analogWrite(out, ProportionalOutput + IntegralOutput + DerivativeOutput*gain[2]);
-  if(error <= 0.1){
-    return true;
-  }
-  return false;
 }
