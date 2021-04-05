@@ -11,17 +11,21 @@ double gainC[3] = {1, 0.0075, 0.2};
 double gainD[3] = {2, 0.1, 0.08};
 double ra = 0.13;
 double rb = 0.09;
+#define RaSquared 0.0169
+#define RbSquared 0.0081
+#define RaRb2 0.0234   // 2*ra*rb
+#define HalfTurn 1.571 // Pi/2
 
 // Timer
 #define USE_TIMER_1 true
-#define TIMER1_FREQ_HZ 1000
+#define TIMER1_FREQ_HZ 3000
 
 // Libraries
 #include <math.h>
 #include "TimerInterrupt.h"
 
-const double Tsample = 1/500;
-const int nhat = 12;
+const double Tsample = 1/3000;
+const int nhat = 8;
 const int P = 4/(Tsample*nhat);
 
 double errorSumA = 0;
@@ -42,9 +46,9 @@ int OutputD = A6;
 
 // Coordinates:
 double marshmallows[][8][3] = {\
-{{0.055, 0, 0}, {0, 0.055, 0},     {0, 0.065, 0},     {0, 0.09, 0},     {0, 0.09, PI/2},     {0, 0.06, PI/2},     {0.055, 0, PI/2}, {0.055, 0, 0}}\
-, {{0.055, 0, 0}, {0.055, 0.055, 0}, {0.055, 0.065, 0}, {0.055, 0.09, 0}, {0.055, 0.09, PI/2}, {0.055, 0.06, PI/2}, {0.055, 0, PI/2}, {0.055, 0, 0}}\
-, {{0.055, 0, 0}, {0.11, 0.055, 0},  {0.11, 0.065, 0},  {0.11, 0.09, 0},  {0.11, 0.09, PI/2},  {0.11, 0.065, PI/2}, {0.055, 0, PI/2}, {0.055, 0, 0}}};
+{{0.055, 0, 0}, {0, 0.055, 0},     {0, 0.065, 0},     {0, 0.09, 0},     {0, 0.09, HalfTurn},     {0, 0.06, HalfTurn},     {0.055, 0, HalfTurn}, {0.055, 0, 0}}\
+, {{0.055, 0, 0}, {0.055, 0.055, 0}, {0.055, 0.065, 0}, {0.055, 0.09, 0}, {0.055, 0.09, HalfTurn}, {0.055, 0.06, HalfTurn}, {0.055, 0, HalfTurn}, {0.055, 0, 0}}\
+, {{0.055, 0, 0}, {0.11, 0.055, 0},  {0.11, 0.065, 0},  {0.11, 0.09, 0},  {0.11, 0.09, HalfTurn},  {0.11, 0.065, HalfTurn}, {0.055, 0, HalfTurn}, {0.055, 0, 0}}};
 
 // Persistent:
 double PrevDerivativeA[nhat] = {0};
@@ -89,6 +93,7 @@ void PID(int out, double error, double errorSum, double gain[], double PrevDeriv
 
 
 void Controller() {
+  // Which and how many marshmallows are we grabbing
   int marshmallowGrab[] = {1, 2, 3};
   int marshmallowCount = 3;
 
@@ -110,11 +115,11 @@ void Controller() {
       double delta = marshmallows[currentMarshmallow][completedStage][3];
       
       // Calculate required angles
-      double beta = acos((pow(xc, 2) + pow(yc, 2) - pow(ra, 2) - pow(rb, 2))/(2*ra*rb));
+      double beta = acos((pow(xc, 2) + pow(yc, 2) - RaSquared - RbSquared)/(RaRb2));
 
       double alpha = atan(yc/xc) - atan((rb*sin(beta))/(ra + rb*cos(beta)));
 
-      double gamma = (alpha_actual + beta_actual - PI/2);
+      double gamma = (alpha_actual + beta_actual - HalfTurn);
 
       // Check if we have reached target location (withing 2%)
       double errorAlpha = (alpha_actual - alpha);
@@ -140,7 +145,7 @@ void Controller() {
     } 
   }
   else {
-    // We are done grabbing, go home
+    // We are done grabbing, go home and callobrate
     double alpha = 0;
     double beta = 0;
     double gamma = 0;
