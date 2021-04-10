@@ -18,4 +18,21 @@ In this paper, Section 1 describes the robotics, including kinematics and path p
 
 ### 1. Robotics
 
+The first thing that had to be done for the robotics of the machine was object placement and path planning. This is a crucial step that determines the length of the arm and thereby the inertia and motors used. The requirements dictated that there should be 3 cylindrical marshmallows on the stopped conveyor which the arm must be able to pick-up and discard. The chosen final positioning was determined with the help of "Mechanical" and optimized for the best results; this positioning is shown in figure 1.1. Given this positioning the optimal arm joint lengths were found to be:
+$$r_a = 0.13m$$
+$$r_b = 0.09m$$
 
+The dots on figure 1.1 represent the path targets of the arm, to be specific the coordinates of motor C. The arm starts at the calibration dot, 0. The arm then moves to the first alignment dot, also known as the garbage dot, 1. This is so that the arm doesn't swing and knock over marshmallows in its initial movement. The arm then follows a set of alignment dots as it approaches a specific marshmallow so that a general path can be followed that won't knock over or tip other marshmallows. Each marshmallow has its own set of alignment dots. Then the arm will go to the respective pick-up dot to grab the marshmallow, followed by the retraction dot and then a return to the garbage dot. From the garbage dot the controller will determine whether another marshmallow needs to be grabbed, and follow the outlined stated above, or return home and wait for further commands.
+
+In order to translate the motor C dot coordinates into angles that can be sent to the appropriate motors, a model for inverse kinematics had to be developed. Using trigonometry the position of motor C was translated from the cartesian coordinates of the dots into polar coordinates $\alpha$ and $\beta$ for motors A and B respectively. This was done using the following formulas:
+$$\beta = \arccos{\frac{x^2 + y^2 + r_a^2 + r_b^2}{2r_a r_b}}$$
+$$\alpha = \arctan{\frac{y}{x}} - \arctan{\frac{r_b \sin{\beta}}{r_a + r_b \cos{\beta}}}$$
+
+To find the necessary angle, $\gamma$, for the swivel motor C so that it remained perpendicular to the conveyor, trigonometry was also used and the following formula was calculated:
+$$\gamma = \alpha + \beta - \pi/2$$
+
+Finally, the angle $\delta$ for motor D, which controls the pincher, was found from the design of the pincher to be 0 in the release position, and $\pi/2$ in the grab position. The necessary angle $\delta$ at any time is pre-determined by the stage or dot it is in, and is part of that stages coordinates.
+
+No forward kinematics were used in the controller since the angles were already being calculated and could be used for error calculation. Turning measured angles into measured position was unnecessary and, therefore, removed to save processing time.
+
+### 2. Modelling
