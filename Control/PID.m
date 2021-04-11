@@ -39,11 +39,14 @@ if isempty(PrevDerivative)
     PrevDerivative = zeros(1,nhat);
 end
 
+% Calculate proportional output
 ProportionalOutput = u*KP;
 
+% Calculate integral output
 errorSum = errorSum + u*Tsample;
 IntegralOutput = errorSum*KI;
 
+% Calculate derivative output
 PrevDerivative(1) = (u - Temp);
 DerivativeOutput = dot(ept, PrevDerivative)*KD;
 
@@ -52,7 +55,9 @@ for n = 1:(nhat - 1)
     PrevDerivative(nhat + 1 - n) = PrevDerivative(nhat - n);
 end
 
+% Update Temp
 Temp = u;
 
+% Sum all outputs and return,
 y = ProportionalOutput + IntegralOutput + DerivativeOutput;
 end
