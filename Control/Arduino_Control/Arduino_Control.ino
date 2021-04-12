@@ -28,11 +28,6 @@ const double Tsample = 1/3000;
 const int nhat = 8;
 const int P = 4/(Tsample*nhat);
 
-double errorSumA = 0;
-double errorSumB = 0;
-double errorSumC = 0;
-double errorSumD = 0;
-
 // Pins:
 int InputA = A1;        // Analog input pin for error
 int InputB = A1;
@@ -59,6 +54,10 @@ double ept[nhat];
 double Temp = 0; 
 int completedMarshmallow = 0;
 int completedStage = 0;
+double errorSumA = 0;
+double errorSumB = 0;
+double errorSumC = 0;
+double errorSumD = 0;
 
 // Functions
 void PID(int out, double error, double errorSum, double gain[], double PrevDerivative[]) {
@@ -176,6 +175,7 @@ void setup() {
   pinMode(OutputC, OUTPUT);
   pinMode(OutputD, OUTPUT);
 
+  // Initialize ept
   if(ept == NULL) {
     int total = 0;
     for(int i=0; i<=nhat; i++){
@@ -187,7 +187,7 @@ void setup() {
     }
   }
   
-  // Frequency in float Hz
+  // Initialize interrupt on timer1
   ITimer1.init();
   if (ITimer1.attachInterrupt(TIMER1_FREQ_HZ, Controller))
     Serial.println("Starting  ITimer0 OK, millis() = " + String(millis()));
