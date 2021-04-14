@@ -109,14 +109,9 @@ void Controller() {
 
     if(completedStage < 8) {
       // Set the target position
-      double xc = marshmallows[currentMarshmallow][completedStage][1];
-      double yc = marshmallows[currentMarshmallow][completedStage][2];
+      double alpha = marshmallows[currentMarshmallow][completedStage][1];
+      double beta = marshmallows[currentMarshmallow][completedStage][2];
       double delta = marshmallows[currentMarshmallow][completedStage][3];
-      
-      // Calculate required angles
-      double beta = acos((pow(xc, 2) + pow(yc, 2) - RaSquared - RbSquared)/(RaRb2));
-
-      double alpha = atan(yc/xc) - atan((rb*sin(beta))/(ra + rb*cos(beta)));
 
       double gamma = (alpha_actual + beta_actual - HalfTurn);
 
@@ -184,6 +179,25 @@ void setup() {
     }
     for(int i=0; i<=nhat; i++){
       ept[i] = ept[i]*(1/(Tsample*total))*Tsample;  // Double check
+    }
+  }
+
+  // Convert to polar
+  // For each marshmallow
+  for(int i=0; i<3;i++){
+    // For each stage
+    for(int j=0; j<8;j++){
+      double xc = marshmallows[i][j][1];
+      double yc = marshmallows[i][j][2];
+
+      // Calculate required angles
+      double beta = acos((pow(xc, 2) + pow(yc, 2) - RaSquared - RbSquared)/(RaRb2));
+
+      double alpha = atan(yc/xc) - atan((rb*sin(beta))/(ra + rb*cos(beta)));
+
+      // Replace xc and yc with alpha and beta
+      marshmallows[i][j][1] = alpha;
+      marshmallows[i][j][2] = beta;
     }
   }
   
