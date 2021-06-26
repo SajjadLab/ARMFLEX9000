@@ -1,7 +1,7 @@
-University of British Columbia
+University of British Columbia	
 ELEC 391
 
-##### ARMFLEX9000
+#### ARMFLEX9000
 - Sajjad Al-Kazzaz
 - Michael Aono
 - Daniel Nadeem
@@ -34,6 +34,7 @@ implementation. Section 4 goes over PID tuning. Section 5 describes porting
 the controller to C. Finally, Section 6 will discuss system performance.
 
 ## Electrical
+![](PCB.png)
 A driver system is developed to power the motors of the quality control robot. The quality control robot
 is capable of three and a half DOF and is powered by 4 identical OTS graphite communicated motors.
 The torque requirements of the robot are met with the addition of planetary gear heads of reduction
