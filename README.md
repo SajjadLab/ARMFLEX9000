@@ -1,7 +1,7 @@
 University of British Columbia
 ELEC 391
 
-### ARMFLEX9000
+##### ARMFLEX9000
 - Sajjad Al-Kazzaz
 - Michael Aono
 - Daniel Nadeem
