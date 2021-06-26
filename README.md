@@ -17,7 +17,7 @@ ELEC 391
 
 
 ## Mechanics
-![](Drawing.jpg)
+![](Drawing.png)
 The physical model of a series robot arm with an attached gripping mechanism is designed and developed 
 to perform quality control on marshmallows. The model is then used to find a linear approximation for 
 an operating point, which is in turn used to run a simulation of the quality control procedure.
