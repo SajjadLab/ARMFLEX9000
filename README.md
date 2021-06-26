@@ -1,4 +1,4 @@
-University of British Columbia	
+University of British Columbia  
 ELEC 391
 
 #### ARMFLEX9000
@@ -17,12 +17,14 @@ ELEC 391
 
 
 ## Mechanics
+![](Drawing.jpg)
 The physical model of a series robot arm with an attached gripping mechanism is designed and developed 
 to perform quality control on marshmallows. The model is then used to find a linear approximation for 
 an operating point, which is in turn used to run a simulation of the quality control procedure.
 
 
 ## Control
+![](SimulinkModel.png)
 ARMFLEX9000 is a 3.5 DOF arm that was developed for the purposes of quality
 control of marshmallows on a conveyor-belt. This paper will discuss some aspects
 of the design of the robot, as well as control of the robot.
@@ -32,6 +34,7 @@ planning. Section 2 discusses robot modelling in Matlab and SimulationX.
 Section 3 describes the Matlab controller, this includes system control and PID
 implementation. Section 4 goes over PID tuning. Section 5 describes porting
 the controller to C. Finally, Section 6 will discuss system performance.
+
 
 ## Electrical
 ![](PCB.png)
